@@ -19,8 +19,8 @@ services:
     environment:
       TZ: ${TZ:-America/New_York}
     volumes:
-      - ./rootfs/data/netbox:/data
-      - ./rootfs/config/netbox:/config
+      - ./volumes/data/netbox:/data
+      - ./volumes/config/netbox:/config
     depends_on:
       - netbox-db
 
@@ -37,7 +37,7 @@ services:
       POSTGRES_USER: ${DB_USER_NAME:-netbox}
       POSTGRES_PASSWORD: ${DB_USER_PASS:-changeme_db_password}
     volumes:
-      - ./rootfs/data/db/postgres/netbox:/var/lib/postgresql/data
+      - ./volumes/data/db/postgres/netbox:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 30s
