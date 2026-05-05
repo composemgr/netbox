@@ -50,9 +50,9 @@ See `docker-compose.yaml` for complete list of configurable options.
 
 ## 📂 Volumes
 
-- `./rootfs/data/netbox` - Data storage
-- `./rootfs/config/netbox` - Data storage
-- `./rootfs/data/db/postgres/netbox` - Data storage
+- `./volumes/data/netbox` - Data storage
+- `./volumes/config/netbox` - Data storage
+- `./volumes/data/db/postgres/netbox` - Data storage
 
 ## 🔐 Security
 
