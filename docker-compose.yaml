@@ -17,10 +17,14 @@ services:
     logging: *default-logging
     networks:
       - netbox
+      - proxy
+      - cloudflare
     ports:
       - "172.17.0.1:8101:8080"
     environment:
       TZ: ${TZ:-America/New_York}
+      CONTAINER_NAME: netbox-app
+      HOSTNAME: ${BASE_HOST_NAME:-$HOSTNAME}
       SUPERUSER_NAME: ${APP_ADMIN_USER:-administrator}
       SUPERUSER_PASSWORD: ${APP_ADMIN_PASS:-changeme_admin_password}
       SUPERUSER_EMAIL: ${APP_ADMIN_EMAIL:-admin@example.com}
@@ -44,6 +48,22 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+    labels:
+      - 'traefik.enable=true'
+      - 'cloudflare.enable=true'
+      - 'traefik.docker.network=proxy'
+      - 'cloudflare.service=http://netbox-app:8080'
+      - 'cloudflare.hostname=netbox.${CLOUDFLARE_ZONE_NAME:-}'
+      - 'traefik.http.routers.netbox-app.entrypoints=http'
+      - 'traefik.http.routers.netbox-app-secure.tls=true'
+      - 'traefik.http.routers.netbox-app.rule=Host($(${BASE_HOST_NAME:-$HOSTNAME}))'
+      - 'traefik.http.middlewares.netbox-app-https-redirect.redirectscheme.scheme=https'
+      - 'traefik.http.routers.netbox-app.middlewares=netbox-app-https-redirect'
+      - 'traefik.http.routers.netbox-app-secure.entrypoints=https'
+      - 'traefik.http.routers.netbox-app-secure.rule=Host($(${BASE_HOST_NAME:-$HOSTNAME}))'
+      - 'traefik.http.routers.netbox-app-secure.tls.certresolver=cloudflare'
+      - 'traefik.http.routers.netbox-app-secure.service=netbox-app'
+      - 'traefik.http.services.netbox-app.loadbalancer.server.port=8080'
 
   db:
     image: postgres:latest
@@ -56,6 +76,7 @@ services:
       - netbox
     environment:
       TZ: ${TZ:-America/New_York}
+      CONTAINER_NAME: netbox-db
       POSTGRES_DB: ${DB_CREATE_DATABASE_NAME:-netbox}
       POSTGRES_USER: ${DB_USER_NAME:-netbox}
       POSTGRES_PASSWORD: ${DB_USER_PASS:-changeme_db_password}
@@ -76,6 +97,8 @@ services:
     logging: *default-logging
     networks:
       - netbox
+    environment:
+      CONTAINER_NAME: netbox-redis
     volumes:
       - ./volumes/data/cache/redis/netbox:/data
 
@@ -83,3 +106,7 @@ networks:
   netbox:
     name: netbox
     external: false
+  proxy:
+    external: true
+  cloudflare:
+    external: true
