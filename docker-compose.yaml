@@ -27,7 +27,7 @@ services:
       HOSTNAME: ${BASE_HOST_NAME:-$HOSTNAME}
       SUPERUSER_NAME: ${APP_ADMIN_USER:-administrator}
       SUPERUSER_PASSWORD: ${APP_ADMIN_PASS:-changeme_admin_password}
-      SUPERUSER_EMAIL: ${APP_ADMIN_EMAIL:-admin@example.com}
+      SUPERUSER_EMAIL: ${APP_ADMIN_USER:-admin@example.com}
       SUPERUSER_API_TOKEN: ${APP_API_TOKEN:-changeme_api_token_min_40_chars}
       DB_HOST: netbox-db
       DB_PORT: 5432
