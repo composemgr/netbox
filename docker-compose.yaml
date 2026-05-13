@@ -25,9 +25,10 @@ services:
       TZ: ${TZ:-America/New_York}
       CONTAINER_NAME: netbox-app
       HOSTNAME: ${BASE_HOST_NAME:-$HOSTNAME}
+      SKIP_SUPERUSER: "false"
       SUPERUSER_NAME: ${APP_ADMIN_USER:-administrator}
       SUPERUSER_PASSWORD: ${APP_ADMIN_PASS:-changeme_admin_password}
-      SUPERUSER_EMAIL: ${APP_ADMIN_USER:-admin@example.com}
+      SUPERUSER_EMAIL: ${APP_ADMIN_USER:-administrator}@${BASE_DOMAIN_NAME:-example.com}
       SUPERUSER_API_TOKEN: ${APP_API_TOKEN:-changeme_api_token_min_40_chars}
       DB_HOST: netbox-db
       DB_PORT: 5432
@@ -36,6 +37,10 @@ services:
       DB_PASSWORD: ${DB_USER_PASS:-changeme_db_password}
       REDIS_HOST: netbox-redis
       REDIS_PORT: 6379
+      REDIS_DATABASE: 0
+      REDIS_CACHE_HOST: netbox-redis
+      REDIS_CACHE_PORT: 6379
+      REDIS_CACHE_DATABASE: 1
       SECRET_KEY: ${APP_SECRET_KEY:-changeme_secret_key_min_32_chars}
       ALLOWED_HOSTS: ${BASE_HOST_NAME:-$HOSTNAME} ${BASE_DOMAIN_NAME:-example.com}
       BASE_PATH: ""
