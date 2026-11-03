@@ -43,6 +43,12 @@ services:
       SECRET_KEY: ${APP_SECRET_KEY:-changeme_secret_key_min_32_chars}
       ALLOWED_HOSTS: ${BASE_HOST_NAME:-$HOSTNAME} ${BASE_DOMAIN_NAME:-example.com}
       BASE_PATH: ""
+    healthcheck:
+      test: ['CMD', 'curl', '-s', '-o', '/dev/null', '--max-time', '5', 'http://127.0.0.1:8080/']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     ports:
       - '172.17.0.1:64267:8080'
     volumes:
@@ -92,6 +98,12 @@ services:
     environment:
       TZ: ${TZ:-America/New_York}
       CONTAINER_NAME: netbox-redis
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli ping | grep -q PONG']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     volumes:
       - './volumes/data/cache/redis/netbox:/data:z'
     networks:
